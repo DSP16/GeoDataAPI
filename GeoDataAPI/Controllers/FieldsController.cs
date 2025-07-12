@@ -1,7 +1,8 @@
 ﻿using GeoDataAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using GeoDataAPI.Models;
+using NetTopologySuite.Geometries;
+using GeoDataAPI.Services;
 
 namespace GeoDataAPI.Controllers
 {
@@ -55,17 +56,17 @@ namespace GeoDataAPI.Controllers
         public IActionResult GetFieldContainingPoint([FromQuery] double lat, [FromQuery] double lng)
         {
             var geometryFactory = NetTopologySuite.NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-            var point = geometryFactory.CreatePoint(new GeoAPI.Geometries.Coordinate(lng, lat));
+            var point = geometryFactory.CreatePoint(new NetTopologySuite.Geometries.Coordinate(lng, lat));
 
             foreach (var field in _fields)
             {
                 var coordinates = field.Locations.Polygon
-                    .Select(p => new GeoAPI.Geometries.Coordinate(p.Lng, p.Lat))
+                    .Select(p => new NetTopologySuite.Geometries.Coordinate(p.Lng, p.Lat))
                     .ToList();
 
                 if (!coordinates[0].Equals(coordinates[coordinates.Count - 1]))
                 {
-                    coordinates.Add(new GeoAPI.Geometries.Coordinate(coordinates[0].X, coordinates[0].Y));
+                    coordinates.Add(new NetTopologySuite.Geometries.Coordinate(coordinates[0].X, coordinates[0].Y));
                 }
 
                 var polygon = geometryFactory.CreatePolygon(coordinates.ToArray());

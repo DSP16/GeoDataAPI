@@ -1,4 +1,9 @@
-﻿namespace GeoDataAPI
+﻿using GeoDataAPI.Services;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
+
+
+namespace GeoDataAPI
 {
     public class Startup
     {
